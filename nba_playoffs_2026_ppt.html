@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 NBA季后赛总结报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .slide-content {
+            max-width: 1400px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Title Slide */
+        .slide-title {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 100%);
+        }
+        
+        .main-title {
+            font-size: 5rem;
+            text-align: center;
+            background: linear-gradient(90deg, #ff6b35, #f7c52f, #ff6b35);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            margin-bottom: 30px;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            text-align: center;
+            color: #a0a0a0;
+        }
+        
+        .logo-large {
+            font-size: 120px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Finals Slide */
+        .finals-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+        
+        .finals-team {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            min-width: 300px;
+        }
+        
+        .finals-team-logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .finals-team-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .finals-team-info {
+            color: #a0a0a0;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        
+        .vs-badge {
+            font-size: 3rem;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .slide-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .slide-title-text {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.2rem;
+            color: #888;
+        }
+        
+        /* Team Cards Grid */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .team-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            border-left: 5px solid;
+        }
+        
+        .team-card.spurs { border-left-color: #c4ced4; }
+        .team-card.knicks { border-left-color: #f58426; }
+        .team-card.thunder { border-left-color: #007ac1; }
+        .team-card.cavaliers { border-left-color: #860038; }
+        
+        .team-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .team-card-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .team-card-record {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #ffd700;
+            font-size: 0.9rem;
+        }
+        
+        .team-card-desc {
+            color: #ccc;
+            line-height: 1.8;
+        }
+        
+        .highlight {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: #ffd700;
+        }
+        
+        /* Player Cards */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .player-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .player-card.mvp::after {
+            content: 'MVP';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(90deg, #ffd700, #ff6b35);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .player-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .player-team {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .player-tag {
+            color: #ff6b35;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .player-desc {
+            color: #ccc;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        
+        /* Games List */
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .game-item {
+            background: linear-gradient(135deg, rgba(255,107,53,0.2) 0%, rgba(247,197,47,0.1) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .game-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .game-tag {
+            background: #ff6b35;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .game-desc {
+            color: #ccc;
+            line-height: 1.8;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .stat-text {
+            color: #a0a0a0;
+            font-size: 1rem;
+        }
+        
+        /* Features List */
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 5px solid #ffd700;
+            padding: 25px;
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .feature-desc {
+            color: #ccc;
+            line-height: 1.8;
+        }
+        
+        /* Schedule Table */
+        .schedule-wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .schedule-table th,
+        .schedule-table td {
+            padding: 18px 25px;
+            text-align: center;
+        }
+        
+        .schedule-table th {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+        
+        .schedule-table td {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1rem;
+        }
+        
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        
+        /* Progress */
+        .progress-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .progress-dot.active {
+            background: #ffd700;
+            transform: scale(1.3);
+        }
+        
+        .progress-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            color: #888;
+            z-index: 1000;
+        }
+        
+        .slide-counter span {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #888;
+            z-index: 1000;
+        }
+        
+        /* Preview Slide */
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+        
+        .preview-box {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 5px solid #ffd700;
+            padding: 25px;
+            border-radius: 0 15px 15px 0;
+        }
+        
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        
+        .preview-text {
+            color: #ccc;
+            line-height: 1.8;
+        }
+        
+        /* End Slide */
+        .end-slide {
+            text-align: center;
+        }
+        
+        .end-logo {
+            font-size: 100px;
+            margin-bottom: 30px;
+        }
+        
+        .end-title {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        
+        .end-text {
+            color: #888;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+        
+        @media (max-width: 1200px) {
+            .teams-grid, .features-list, .preview-container {
+                grid-template-columns: 1fr;
+            }
+            .players-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-title { font-size: 3rem; }
+            .slide-title-text { font-size: 2rem; }
+            .players-grid, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .finals-container {
+                gap: 30px;
+            }
+            .vs-badge {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide slide-title active" data-slide="1">
+            <div class="slide-content">
+                <div class="logo-large">🏀</div>
+                <h1 class="main-title">2026 NBA季后赛总结报告</h1>
+                <p class="subtitle">季后赛征程回顾 · 总决赛前瞻分析</p>
+                <p style="text-align: center; margin-top: 50px; color: #666;">
+                    按 <strong style="color:#ffd700;">← →</strong> 键或点击下方按钮翻页
+                </p>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Finals Matchup -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🏆 2026 NBA总决赛对阵</h2>
+                    <p class="slide-subtitle">时隔多年的经典对决重现</p>
+                </div>
+                <div class="finals-container">
+                    <div class="finals-team">
+                        <div class="finals-team-logo">🦃</div>
+                        <div class="finals-team-name">圣安东尼奥马刺</div>
+                        <div class="finals-team-info">
+                            西部冠军<br>
+                            时隔12年重返总决赛<br>
+                            西决4-3淘汰雷霆
+                        </div>
+                    </div>
+                    <div class="vs-badge">VS</div>
+                    <div class="finals-team">
+                        <div class="finals-team-logo">🗽</div>
+                        <div class="finals-team-name">纽约尼克斯</div>
+                        <div class="finals-team-info">
+                            东部冠军<br>
+                            时隔27年重返总决赛<br>
+                            季后赛11连胜
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Finals Schedule -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">📅 总决赛赛程安排</h2>
+                    <p class="slide-subtitle">赛制：2-2-1-1-1 | 马刺拥有主场优势</p>
+                </div>
+                <div class="schedule-wrapper">
+                    <table class="schedule-table">
+                        <thead>
+                            <tr>
+                                <th>场次</th>
+                                <th>日期</th>
+                                <th>对阵</th>
+                                <th>主场</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>G1</td><td>6月5日 (周四)</td><td>尼克斯 vs 马刺</td><td>马刺</td></tr>
+                            <tr><td>G2</td><td>6月7日 (周六)</td><td>尼克斯 vs 马刺</td><td>马刺</td></tr>
+                            <tr><td>G3</td><td>6月9日 (周一)</td><td>马刺 vs 尼克斯</td><td>尼克斯</td></tr>
+                            <tr><td>G4</td><td>6月11日 (周三)</td><td>马刺 vs 尼克斯</td><td>尼克斯</td></tr>
+                            <tr><td>G5*</td><td>6月13日 (周五)</td><td>尼克斯 vs 马刺</td><td>马刺</td></tr>
+                            <tr><td>G6*</td><td>6月15日 (周日)</td><td>马刺 vs 尼克斯</td><td>尼克斯</td></tr>
+                            <tr><td>G7*</td><td>6月17日 (周二)</td><td>尼克斯 vs 马刺</td><td>马刺</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="text-align: center; color: #888; margin-top: 20px;">* 如有必要进行</p>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Key Teams - Spurs & Knicks -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🏆 重点球队表现（一）</h2>
+                    <p class="slide-subtitle">总决赛球队</p>
+                </div>
+                <div class="teams-grid">
+                    <div class="team-card spurs">
+                        <div class="team-card-header">
+                            <div class="team-card-name">🦃 圣安东尼奥马刺</div>
+                            <div class="team-card-record">西决4-3雷霆</div>
+                        </div>
+                        <p class="team-card-desc">作为西部黑马，马刺在西部决赛中与联盟第一雷霆上演抢七大战，最终4-3淘汰对手，时隔12年重返总决赛。文班亚马的统治级表现是球队晋级的关键。</p>
+                        <div class="highlight">文班亚马西决场均28.2分11.5篮板3盖帽，季后赛累计372分刷新中锋首秀纪录</div>
+                    </div>
+                    <div class="team-card knicks">
+                        <div class="team-card-header">
+                            <div class="team-card-name">🗽 纽约尼克斯</div>
+                            <div class="team-card-record">季后赛11连胜</div>
+                        </div>
+                        <p class="team-card-desc">尼克斯本届季后赛表现堪称完美，连续两轮横扫对手，豪取季后赛11连胜，时隔27年重返总决赛舞台。布伦森的领袖表现令人印象深刻。</p>
+                        <div class="highlight">东决4-0横扫骑士，次轮4-0横扫76人，第四节场均得分联盟领先</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Key Teams - Thunder & Cavaliers -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🏆 重点球队表现（二）</h2>
+                    <p class="slide-subtitle">分区决赛球队</p>
+                </div>
+                <div class="teams-grid">
+                    <div class="team-card thunder">
+                        <div class="team-card-header">
+                            <div class="team-card-name">⚡ 俄克拉荷马雷霆</div>
+                            <div class="team-card-record">西决3-4马刺</div>
+                        </div>
+                        <p class="team-card-desc">常规赛联盟第一，亚历山大连庄常规赛MVP。西决抢七惜败马刺，替补阵容曾单场狂砍76分展现深度，但关键时刻未能限制文班亚马。</p>
+                        <div class="highlight">G6魔咒延续，连续多年在关键场次掉链子，本赛季西决G6输球后抢七再败</div>
+                    </div>
+                    <div class="team-card cavaliers">
+                        <div class="team-card-header">
+                            <div class="team-card-name">⚔️ 克利夫兰骑士</div>
+                            <div class="team-card-record">东决0-4尼克斯</div>
+                        </div>
+                        <p class="team-card-desc">次轮抢七逆转活塞晋级东决，哈登时隔8年重返分区决赛。但东决面对尼克斯毫无还手之力，G1曾领先22分被逆转成为系列赛转折点。</p>
+                        <div class="highlight">东决G1末节领先22分被逆转，最终被横扫出局，哈登东决表现下滑明显</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Star Players - Wembanyama & Brunson -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">⭐ 明星球员表现（一）</h2>
+                    <p class="slide-subtitle">总决赛核心球员</p>
+                </div>
+                <div class="players-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="player-card mvp">
+                        <div class="player-name">维克多·文班亚马</div>
+                        <div class="player-team">圣安东尼奥马刺 · 中锋</div>
+                        <div class="player-tag">西决MVP</div>
+                        <p class="player-desc">历史级天赋展现，西决G1狂砍41分24篮板，攻防两端统治比赛，季后赛累计372分刷新中锋首秀纪录</p>
+                        <div class="player-stats">
+                            <div class="stat-box"><div class="stat-value">28.2</div><div class="stat-label">西决场均得分</div></div>
+                            <div class="stat-box"><div class="stat-value">11.5</div><div class="stat-label">场均篮板</div></div>
+                            <div class="stat-box"><div class="stat-value">3</div><div class="stat-label">场均盖帽</div></div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-name">杰伦·布伦森</div>
+                        <div class="player-team">纽约尼克斯 · 后卫</div>
+                        <div class="player-tag">尼克斯核心</div>
+                        <p class="player-desc">季后赛至今274分，第四节场均10.8分命中率50.8%，多次关键时刻挺身而出带队逆转</p>
+                        <div class="player-stats">
+                            <div class="stat-box"><div class="stat-value">274</div><div class="stat-label">季后赛总得分</div></div>
+                            <div class="stat-box"><div class="stat-value">10.8</div><div class="stat-label">第四节场均</div></div>
+                            <div class="stat-box"><div class="stat-value">50.8%</div><div class="stat-label">第四节命中率</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Star Players - SGA & Harden -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">⭐ 明星球员表现（二）</h2>
+                    <p class="slide-subtitle">其他明星球员</p>
+                </div>
+                <div class="players-grid">
+                    <div class="player-card">
+                        <div class="player-name">谢伊·亚历山大</div>
+                        <div class="player-team">俄克拉荷马雷霆 · 后卫</div>
+                        <div class="player-tag">常规赛MVP连庄</div>
+                        <p class="player-desc">常规赛MVP两连庄，但西决面对马刺防守效率下降</p>
+                        <div class="player-stats">
+                            <div class="stat-box"><div class="stat-value">83</div><div class="stat-label">MVP第一选票</div></div>
+                            <div class="stat-box"><div class="stat-value">27.7</div><div class="stat-label">抢七场均得分</div></div>
+                            <div class="stat-box"><div class="stat-value">—</div><div class="stat-label">西决出局</div></div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-name">詹姆斯·哈登</div>
+                        <div class="player-team">克利夫兰骑士 · 后卫</div>
+                        <div class="player-tag">时隔8年重返东决</div>
+                        <p class="player-desc">季后赛219分，次轮抢七关键表现助队晋级</p>
+                        <div class="player-stats">
+                            <div class="stat-box"><div class="stat-value">219</div><div class="stat-label">季后赛总得分</div></div>
+                            <div class="stat-box"><div class="stat-value">21</div><div class="stat-label">常规赛场均</div></div>
+                            <div class="stat-box"><div class="stat-value">8年</div><div class="stat-label">重返东决</div></div>
+                        </div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-name">亚历克斯·卡鲁索</div>
+                        <div class="player-team">俄克拉荷马雷霆 · 后卫</div>
+                        <div class="player-tag">角色球员MVP</div>
+                        <p class="player-desc">西决期间堪称雷霆最佳球员，防守端贡献巨大</p>
+                        <div class="player-stats">
+                            <div class="stat-box"><div class="stat-value">关键</div><div class="stat-label">防守贡献</div></div>
+                            <div class="stat-box"><div class="stat-value">76</div><div class="stat-label">替补单场总分</div></div>
+                            <div class="stat-box"><div class="stat-value">传奇</div><div class="stat-label">角色球员</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Key Games - Part 1 -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🔥 最受聚焦的比赛（一）</h2>
+                    <p class="slide-subtitle">经典对决回顾</p>
+                </div>
+                <div class="games-list">
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div class="game-title">西部决赛 G1：马刺 vs 雷霆</div>
+                            <div class="game-tag">双加时逆转</div>
+                        </div>
+                        <p class="game-desc"><strong>比分：</strong>马刺 122-115 雷霆（双加时）<br>
+                        文班亚马打出史诗级表现，25投14中，三分7中3，罚球13中12，狂砍<strong>41分24篮板3助攻3盖帽</strong>，带领马刺客场双加时逆转雷霆，打破雷霆季后赛不败金身。这场比赛被认为是本届季后赛最精彩的个人表演。<br>
+                        <span style="color:#ffd700;">历史意义：文班亚马成为NBA历史首位在季后赛砍下40+20+3盖帽的球员</span></p>
+                    </div>
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div class="game-title">东部决赛 G1：尼克斯 vs 骑士</div>
+                            <div class="game-tag">22分大逆转</div>
+                        </div>
+                        <p class="game-desc"><strong>比分：</strong>尼克斯 115-104 骑士（加时）<br>
+                        骑士末节一度领先<strong>22分</strong>，现场解说已提前庆祝。但布伦森突然爆发，末节独得15分带队追平拖入加时，最终完成惊天逆转。这场比赛成为系列赛转折点。<br>
+                        <span style="color:#ffd700;">逆转之王：布伦森第四节9投7中独得15分，展现超级巨星潜质</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Key Games - Part 2 -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🔥 最受聚焦的比赛（二）</h2>
+                    <p class="slide-subtitle">抢七大战与逆转好戏</p>
+                </div>
+                <div class="games-list">
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div class="game-title">西部决赛 G7：马刺 vs 雷霆</div>
+                            <div class="game-tag">抢七生死战</div>
+                        </div>
+                        <p class="game-desc">联盟第一雷霆主场背水一战，但马刺凭借文班亚马的稳定发挥和团队篮球，客场抢七淘汰雷霆，完成"黑七"奇迹。雷霆G6魔咒延续，连续多年在关键场次掉链子。<br>
+                        <span style="color:#ffd700;">历史数据：马刺队史客场抢七此前仅1胜5负，本次打破18年客场抢七不胜魔咒</span></p>
+                    </div>
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div class="game-title">东部半决赛 G7：骑士 vs 活塞</div>
+                            <div class="game-tag">下克上晋级</div>
+                        </div>
+                        <p class="game-desc">骑士以系列赛4-3逆转东部第一活塞，哈登抢七关键表现助队时隔8年重返东部决赛。这是本届季后赛经典下克上案例之一。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Key Stats -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">📈 季后赛重要数据</h2>
+                    <p class="slide-subtitle">数字见证历史</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">11</div>
+                        <div class="stat-text">尼克斯季后赛连胜场次</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">27年</div>
+                        <div class="stat-text">尼克斯重返总决赛间隔</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">12年</div>
+                        <div class="stat-text">马刺重返总决赛间隔</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">41+24</div>
+                        <div class="stat-text">文班亚马西决G1数据</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">22分</div>
+                        <div class="stat-text">东决G1尼克斯逆转分差</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">76分</div>
+                        <div class="stat-text">雷霆替补单场最高总分</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Playoff Features -->
+        <div class="slide" data-slide="11">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">💡 本届季后赛特点</h2>
+                    <p class="slide-subtitle">2026季后赛的独特印记</p>
+                </div>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-title">🎭 角色球员主宰比赛</div>
+                        <p class="feature-desc">超级巨星再强，也扛不住角色球员集体拉胯；而"板凳匪徒"一旦爆发，任何劣势都能翻盘。雷霆替补曾单场狂砍76分，卡鲁索成为西决最佳球员之一。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title">🔄 逆转成为主旋律</div>
+                        <p class="feature-desc">本届季后赛多次上演大逆转好戏：东决G1尼克斯末节逆转22分、西决G1马刺双加时逆转雷霆、多组系列赛出现3-1被逆转情况。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title">👶 新生代球星崛起</div>
+                        <p class="feature-desc">文班亚马、布伦森、亚历山大等年轻球星在季后赛舞台大放异彩，文班亚马更是以西决MVP表现带领马刺重返总决赛，宣告新时代到来。</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-title">🏆 历史重现</div>
+                        <p class="feature-desc">马刺vs尼克斯的总决赛对决，让人想起1999年两队的总决赛交锋（马刺4-1夺冠）。时隔27年，两队再次在总决赛相遇，堪称经典复刻。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 12: Finals Preview -->
+        <div class="slide" data-slide="12">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2 class="slide-title-text">🔮 总决赛前瞻</h2>
+                    <p class="slide-subtitle">冠军归属预测</p>
+                </div>
+                <div class="preview-container">
+                    <div class="preview-box">
+                        <div class="preview-title">🦃 马刺优势</div>
+                        <p class="preview-text">文班亚马历史级攻防统治力、成熟的团队篮球体系、充足的阵容深度、波波维奇的执教经验。本赛季曾在常规赛134-132击败尼克斯。</p>
+                    </div>
+                    <div class="preview-box">
+                        <div class="preview-title">🗽 尼克斯优势</div>
+                        <p class="preview-text">季后赛11连胜气势如虹、布伦森关键时刻能力出众、防守端针对性极强。曾在NBA杯决赛124-113击败马刺夺冠，心理占优。</p>
+                    </div>
+                    <div class="preview-box" style="grid-column: span 2;">
+                        <div class="preview-title">⚔️ 关键对位</div>
+                        <p class="preview-text">文班亚马 vs 尼克斯内线防守将是系列赛最大看点。布伦森能否延续第四节神奇表现，马刺能否限制尼克斯外线火力，都将决定总冠军归属。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 13: End -->
+        <div class="slide" data-slide="13">
+            <div class="slide-content end-slide">
+                <div class="end-logo">🏀</div>
+                <div class="end-title">感谢观看</div>
+                <div class="end-text">
+                    2026 NBA季后赛总结报告<br>
+                    数据来源：NBA官方及各大体育媒体<br>
+                    生成时间：2026年5月31日<br><br>
+                    <span style="color:#ffd700;">为中国NBA球迷呈现</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Controls -->
+    <div class="keyboard-hint">← → 键翻页 | 点击圆点跳转</div>
+    <div class="slide-counter">第 <span id="currentSlide">1</span> / <span id="totalSlides">13</span> 页</div>
+    
+    <div class="progress-container" id="progressContainer"></div>
+    
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn">◀ 上一页</button>
+        <button class="nav-btn" id="nextBtn">下一页 ▶</button>
+    </div>
+    
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        const progressContainer = document.getElementById('progressContainer');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+            dot.addEventListener('click', () => goToSlide(i));
+            progressContainer.appendChild(dot);
+        }
+        
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+            
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+        
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-controls') || e.target.closest('.progress-container')) {
+                return;
+            }
+            
+            const clickX = e.clientX;
+            const windowWidth = window.innerWidth;
+            
+            if (clickX > windowWidth * 0.7) {
+                nextSlide();
+            } else if (clickX < windowWidth * 0.3) {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
