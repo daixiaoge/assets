@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>掼蛋拖牌规则速览</title>
+<style>
+  :root {
+    --bg: #f5f5f0;
+    --card-bg: #ffffff;
+    --primary: #2d5a3d;
+    --primary-light: #4a8b5e;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --gold: #d4a017;
+    --text: #2c2c2c;
+    --text-light: #666;
+    --border: #e0e0e0;
+    --tag-red-bg: #fdf0ef;
+    --tag-green-bg: #eef7f0;
+    --tag-gold-bg: #fdf8ec;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 48px 0 36px;
+  }
+
+  .hero h1 {
+    font-size: 2em;
+    color: var(--primary);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .hero .subtitle {
+    font-size: 0.95em;
+    color: var(--text-light);
+  }
+
+  .hero .deck-icon {
+    font-size: 3em;
+    margin-bottom: 12px;
+  }
+
+  /* Section */
+  .section {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.8em;
+    flex-shrink: 0;
+  }
+
+  /* Definition card */
+  .def-box {
+    background: var(--tag-green-bg);
+    border-left: 4px solid var(--primary-light);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .def-box p {
+    margin: 0;
+    font-size: 0.95em;
+  }
+
+  .example-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .example-chip {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.85em;
+    text-align: center;
+  }
+
+  .example-chip .label {
+    color: var(--text-light);
+    font-size: 0.8em;
+  }
+
+  .example-chip .value {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 1.1em;
+  }
+
+  /* Conditions grid */
+  .cond-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 520px) {
+    .cond-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  .cond-card {
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+
+  .cond-card .cond-icon {
+    font-size: 1.8em;
+    margin-bottom: 6px;
+  }
+
+  .cond-card h4 {
+    font-size: 0.95em;
+    margin-bottom: 6px;
+  }
+
+  .cond-card p {
+    font-size: 0.82em;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .cond-timing { background: var(--tag-green-bg); border: 1px solid #c8e6c9; }
+  .cond-type   { background: var(--tag-gold-bg);  border: 1px solid #ffe082; }
+  .cond-role   { background: var(--tag-red-bg);   border: 1px solid #ffcdd2; }
+
+  /* Note callout */
+  .note {
+    background: #fff8e1;
+    border: 1px dashed var(--gold);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 14px;
+    font-size: 0.85em;
+    color: #8a6d1c;
+  }
+
+  /* Reward table */
+  .reward-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 0.88em;
+  }
+
+  .reward-table th {
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85em;
+  }
+
+  .reward-table th:first-child { border-radius: 8px 0 0 0; }
+  .reward-table th:last-child  { border-radius: 0 8px 0 0; }
+
+  .reward-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .reward-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .reward-table .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+  }
+
+  .tag-up   { background: #e8f5e9; color: #2e7d32; }
+  .tag-up-red { background: #ffebee; color: #c62828; }
+  .tag-up-gold { background: #fff8e1; color: #f57f17; }
+
+  /* Mistakes list */
+  .mistake-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mistake-item:last-child {
+    border-bottom: none;
+  }
+
+  .mistake-x {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: var(--tag-red-bg);
+    color: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .mistake-text {
+    font-size: 0.9em;
+  }
+
+  .mistake-text .strike {
+    text-decoration: line-through;
+    color: var(--accent);
+  }
+
+  /* Quick summary */
+  .summary-box {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    border-radius: 14px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .summary-box h3 {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .summary-box .one-liner {
+    font-size: 0.92em;
+    line-height: 1.9;
+    opacity: 0.95;
+  }
+
+  .summary-box .one-liner strong {
+    background: rgba(255,255,255,0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.8em;
+    padding: 20px 0;
+  }
+
+  /* Highlight */
+  .hl { color: var(--accent); font-weight: 700; }
+  .hl-green { color: var(--primary); font-weight: 700; }
+  .hl-gold { color: var(--gold); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="deck-icon">🃏</div>
+    <h1>掼蛋拖牌规则</h1>
+    <p class="subtitle">你已经会掼蛋，这篇只讲「拖牌」怎么玩</p>
+  </div>
+
+  <!-- Quick Summary -->
+  <div class="summary-box">
+    <h3>一句话理解</h3>
+    <p class="one-liner">
+      赢家在本局<strong>最后一手</strong>打出<strong>纯小牌</strong>，<br>
+      牌型必须是<strong>任意张数纯小牌</strong>（单张到炸弹都行），<br>
+      拖牌成功后，对手不能压拖牌，出牌权交队友，队友接硬风。
+    </p>
+  </div>
+
+  <!-- Section 1: Definition -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">1</span>
+      什么是拖牌 & 小牌
+    </div>
+    <div class="def-box">
+      <p><strong>"小牌"</strong> = 全场<span class="hl-green">最小的牌</span>。打 2 时小牌是 <strong>3</strong>，其余打级小牌都是 <strong>2</strong>。拖牌就是赢家<strong>最后一手打出纯小牌牌型</strong>——<span class="hl-green">任意张数</span>都可以，如 222、2222、22222 全算。</p>
+    </div>
+    <div class="example-row">
+      <div class="example-chip">
+        <div class="label">打 2 时</div>
+        <div class="value">小牌 = 3</div>
+      </div>
+      <div class="example-chip">
+        <div class="label">打 3 时</div>
+        <div class="value">小牌 = 2</div>
+      </div>
+      <div class="example-chip">
+        <div class="label">打 5 时</div>
+        <div class="value">小牌 = 2</div>
+      </div>
+    </div>
+    <div class="note">
+      💡 记住这个规律：<strong>只有打 2 时小牌才是 3</strong>（因为 2 成了打级牌），其余无论打几，小牌都是 <strong>2</strong>。
+    </div>
+  </div>
+
+  <!-- Section 2: Three Conditions -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">2</span>
+      成功生效 · 3 个硬性条件
+    </div>
+    <p style="font-size:0.88em;color:var(--text-light);margin-bottom:14px;">三个条件<span class="hl">缺一不可</span>，任一不满足则拖牌无效。</p>
+
+    <div class="cond-grid">
+      <div class="cond-card cond-timing">
+        <div class="cond-icon">⏱️</div>
+        <h4>时机</h4>
+        <p>必须本局<strong>最后一手</strong>领出（接风后领出也算）。<strong>炸弹拖牌必须是领出</strong>——自己有牌权时主动打出，被别人炸弹压住不算。</p>
+      </div>
+      <div class="cond-card cond-type">
+        <div class="cond-icon">🃏</div>
+        <h4>牌型</h4>
+        <p>必须<strong>任意张数的纯小牌</strong>：1 张、2 张、3 张、4 张、5 张……都行（如 2、22、222、2222、22222）。三带二、顺子、逢人配组合都不算。</p>
+      </div>
+      <div class="cond-card cond-role">
+        <div class="cond-icon">👑</div>
+        <h4>身份</h4>
+        <p>只有拿到<strong>头游</strong>才有拖牌奖励，输家未出的拖牌要罚。</p>
+      </div>
+    </div>
+
+    <div class="note">
+      ⚠️ 第一轮首攻，<strong>禁止</strong>出拖牌。
+    </div>
+  </div>
+
+  <!-- Section 3: Rewards -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">3</span>
+      成功后的奖励
+    </div>
+
+    <div class="def-box" style="background:var(--tag-gold-bg);border-left-color:var(--gold);">
+      <p><strong>接硬风：</strong>这手小牌无人能管，出牌权直接交给<span class="hl-green">对家队友</span>。</p>
+    </div>
+
+    <table class="reward-table">
+      <thead>
+        <tr>
+          <th>拖牌类型</th>
+          <th>每张奖励</th>
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>普通小牌</td>
+          <td><span class="tag tag-up">+ 升 1 级</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>红桃小牌</td>
+          <td><span class="tag tag-up-red">+ 升 2 级</span></td>
+          <td>额外翻倍</td>
+        </tr>
+        <tr>
+          <td>输家未出的小牌</td>
+          <td>未出的普通小牌，对手升 <strong>1 级</strong>；未出的红桃小牌，对手升 <strong>2 级</strong></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="def-box" style="background:var(--tag-red-bg);border-left-color:var(--accent);margin-top:14px;">
+      <p><strong>输家罚级：</strong>输家手中没打出的拖牌要罚。每剩 <strong>1 张普通小牌</strong>没出，对手<span class="hl">多升 1 级</span>；每剩 <strong>1 张红桃小牌</strong>没出，对手<span class="hl">多升 2 级</span>。</p>
+    </div>
+
+    <div class="note" style="border-color:var(--primary-light);background:var(--tag-green-bg);color:var(--primary);">
+      💡 常规升级基础上叠加拖牌奖励，<strong>大幅加快升级节奏</strong>。
+    </div>
+  </div>
+
+  <!-- Section 4: Common Mistakes -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-num">4</span>
+      常见误区
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div class="mistake-text">
+        <span class="strike">混搭牌型</span>算拖牌 —— 如三张 5 带对 3，<strong>不算</strong>。
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div class="mistake-text">
+        <span class="strike">用逢人配凑的小牌</span>算拖牌 —— 组合牌<strong>不算</strong>。
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div class="mistake-text">
+        最后一手<span class="strike">被对手炸弹压住</span>，哪怕手里剩小牌也<strong>不算拖成功</strong>。
+      </div>
+    </div>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div class="mistake-text">
+        <span class="strike">下游队伍拖牌</span>有升级效果 —— <strong>无效</strong>，只有头游队伍能享受。
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    掼蛋拖牌规则速览 · 适用于已了解掼蛋基础规则的玩家
+  </div>
+
+</div>
+
+</body>
+</html>
